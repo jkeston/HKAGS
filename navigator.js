@@ -88,7 +88,7 @@ function chooseTeam(val, theme) {
 
     // Theme 0 (default)
     th[0][0] = color(217, 2, 125, 255);
-    th[1][0] = color(0, 255, 0, 255);
+    th[1][0] = color(0, 175, 102, 255);
     th[2][0] = color(0, 255, 200, 128);
 
     // Theme 1 (Charcoal)
