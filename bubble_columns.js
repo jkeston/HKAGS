@@ -6,7 +6,7 @@ let img;
 let x = 0;
 
 function preload() {
-  img = loadImage('images/bubble_columns_long.jpg');
+  img = loadImage('images/bubble_columns_long_vector.png');
 }
 
 function setup() {
