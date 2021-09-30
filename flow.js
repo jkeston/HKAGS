@@ -1,17 +1,14 @@
 const LOCATION_JITTER_MIN = 0; // randomness applied to point locations
 const LOCATION_JITTER_MAX = 30;
-const SPEED_MULT_MIN = 0.0001; // min update speed. lower number means less divergence
+const SPEED_MULT_MIN = 0.00001; // min update speed. lower number means less divergence
 const SPEED_MULT_MAX = 0.01; // max update speed. higher number means more divergence
 const MIN_DENSITY = 10; // min number of lines on a player's drawing
-const MAX_DENSITY = 40; // max number of lines on a player's drawing
+const MAX_DENSITY = 60; // max number of lines on a player's drawing
 const MIN_RESET_TIME = 500; // min ticks before a player's drawing resets
 const MAX_RESET_TIME = 1000; // max ticks before a player's drawing resets
-const LINE_WEIGHT = 1.25;
+const LINE_WEIGHT = 1;
 const PRE_RESET_DIMMING_AMOUNT = 4; // how much to dim out old drawing as reset draws near
-const RESET_DIMMING_AMOUNT = 100; // final opacity to overlay on drawing upon reset
-
-let player1Colors = [217, 2, 125];
-let player2Colors = [0, 175, 102];
+const RESET_DIMMING_AMOUNT = 75; // final opacity to overlay on drawing upon reset
 
 let players;
 
