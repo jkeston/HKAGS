@@ -11,7 +11,7 @@ const MAX_AMP = 1;
 const MIN_SCROLL_MULT = 2;
 const MAX_SCROLL_MULT = 5;
 const MIN_LINE_WIDTH = 0.5;
-const MAX_LINE_WIDTH = 20;
+const MAX_LINE_WIDTH = 7;
 
 let players;
 
