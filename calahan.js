@@ -1,12 +1,12 @@
 // declare some things
-let speed = -3;
+let speed = -2;
 let score_len = 0;
 const WMOD = 1;
 let img;
 let x = 0;
 
 function preload() {
-  img = loadImage('images/calahan_graphic_score_expanded.png');
+  img = loadImage('images/calahan_graphic_score_vectors.png');
 }
 
 function setup() {
@@ -14,7 +14,7 @@ function setup() {
   w = windowWidth * WMOD;
   h = windowHeight * WMOD;
   createCanvas(w, h);
-  pixelDensity(1);
+  // pixelDensity();
   x = w * 0.5;
   img.resize(0,h);
   // console.log(pixelDensity());
