@@ -6,7 +6,20 @@ let img;
 let x = 0;
 
 function preload() {
-  img = loadImage('images/bubble_columns_long_vector.png');
+  switch(rollDice(4)) {
+    case 1:
+      img = loadImage('images/voronoi_vectors.png');
+      break;
+    case 2:
+      img = loadImage('images/voronoi_vectors_bw.png');
+      break;
+    case 3:
+      img = loadImage('images/voronoi_vectors_flipped.png');
+      break;
+    case 4:
+      img = loadImage('images/voronoi_vectors_flipped_bw.png');
+      break;
+  }
 }
 
 function setup() {
@@ -27,9 +40,6 @@ function windowResized() {
 }
 
 function draw() {
-  background(0);
-  strokeWeight(3);
-  stroke(255);
   image(img, x, 0);
   x += speed;
 }
