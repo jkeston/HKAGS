@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HKAGS &raquo; Voronoi Columns</title>
+	<meta charset="utf-8" />
+	<script src="libs/jquery-3.3.1.min.js"></script>
+	<script src="libs/p5.min.js"></script>
+	<script src="libs/rhill-voronoi-core.js"></script>
+	<script src="libs/p5.voronoi.min.js"></script>
+	<script src="navigator.js"></script>
+	<script src="voronoi_columns.js"></script>
+	<link rel='stylesheet' href="timer.css" />
+	<style>
+		#dashed {
+			margin: 0 auto;
+			position: absolute;
+			z-index: 2;
+			top: 0;
+			width: 50%;
+			height: 100vh;
+			border-right: 1px dashed rgba(255, 255, 255, 0.5);
+			background-color: rgba(0, 0, 0, 0.25);
+		}
+		canvas {
+			position: absolute;
+			/* top: 10vh; */
+		}
+	</style>
+</head>
+<body style="margin:0;background:#000;">
+	<canvas style="margin:auto;"></canvas>
+	<div id="dashed">&nbsp;</div>
+	<!-- <div id="time">00<sup>:</sup>00</div> -->
+</body>
+</html>
