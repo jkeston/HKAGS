@@ -32,12 +32,7 @@ function windowResized() {
 }
 
 function draw() {
-  // prevent image smudge
-  if (abs(x) > end) {
-    background(0);
-  }
-  strokeWeight(3);
-  stroke(255);
+  background(0);
   image(img, x, 0);
   // fade it in
   if (frameCount < 86) {
@@ -45,6 +40,4 @@ function draw() {
       alpha -= 3;
   }
   x += speed;
-
-
 }
