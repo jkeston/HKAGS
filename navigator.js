@@ -8,6 +8,7 @@ let d;
 let sInt;
 let scene_id;
 let scene_length;
+let show_timer = true;
 // let loc;
 // let parts;
 let cols = [
@@ -133,6 +134,10 @@ window.onload = function() {
     freeze = [ 1, 1, 1, 1, 1, 1, 1, 1 ];
     scene_id = scenes.indexOf(filename);
     scene_length = times[scene_id];
+    if (show_timer) {
+      $('#time').css('display','block');
+      console.log("hide timer");
+    }
     reStartTimer();
 }
 
@@ -153,8 +158,9 @@ function startTimer(duration, display) {
         }
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.html(minutes + "<sup>:</sup>" + seconds);
+        if (show_timer) {
+          display.html(minutes + "<sup>:</sup>" + seconds);
+        }
         // we're finished with this scene
         if (++timer > duration) {
             timer = duration;

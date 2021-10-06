@@ -41,7 +41,7 @@ canvas {
   opacity: 0;
 }
 #time {
-    /* display: none;  */
+    display: none; 
     font-family: LatoThin;
     color: rgba(255, 255, 255, 0.25);
     position: fixed;
