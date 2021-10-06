@@ -8,7 +8,7 @@ let d;
 let sInt;
 let scene_id;
 let scene_length;
-let show_timer = true;
+let show_timer = false;
 // let loc;
 // let parts;
 let cols = [
