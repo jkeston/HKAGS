@@ -10,16 +10,6 @@ let scene_id;
 let scene_length;
 // let loc;
 // let parts;
-// let cols = [
-//     'rgba(255, 255, 255, 0.30)',
-//     'rgba(128, 255, 255, 0.35)',
-//     'rgba(64, 255, 255, 0.40)',
-//     'rgba(0, 255, 128, 0.45)',
-//     'rgba(255, 255, 0, 0.50)',
-//     'rgba(255, 128, 64, 0.55)',
-//     'rgba(255, 0, 0, 0.60)',
-//     'rgba(255, 0, 0, 0.65)'
-// ];
 let cols = [
     'rgba(255, 255, 255, 0.30)',
     'rgba(64, 255, 255, 0.35)',
@@ -137,10 +127,10 @@ window.onload = function() {
     7. Generator | Pulse B (3.5 min) generator
     8. Connecting (7 min) transmission_strands
     9. Full Volume \ Used as an ending (15 seconds) */
-    scenes = [ 'pseudo_anchor.html', 'pianissimo_textures.html', 'twilight_drones.html', 'pianissimo_textures_2.html', 'generator.html', 'transmission_strands.html', 'generator_2.html', 'repeated_ramps.html' ];
+    scenes = [ 'combs.html', 'generator.html', 'flock.html', 'bubble_columns.html', 'lfos.html', 'calahan.html', 'flow.html', 'rain.html' ];
     // times are in seconds
-    times = [ 420, 210, 420, 210, 210, 420, 210, 450 ];
-    freeze = [ 1, 0, 1, 1, 1, 1, 1, 1 ];
+    times = [ 420, 420, 420, 420, 420, 420, 420, 420 ];
+    freeze = [ 1, 1, 1, 1, 1, 1, 1, 1 ];
     scene_id = scenes.indexOf(filename);
     scene_length = times[scene_id];
     reStartTimer();

@@ -4,6 +4,8 @@ let score_len = 0;
 const WMOD = 1;
 let img;
 let x = 0;
+let end = 0;
+let alpha = 255;
 
 function preload() {
   switch(rollDice(4)) {
@@ -31,6 +33,11 @@ function setup() {
   x = w * 0.5;
   img.resize(0,h);
   // console.log(pixelDensity());
+
+  score_len = img.width;
+  end = score_len - w;
+  speed = -((score_len)/(times[scene_id] * 30));
+  // console.log("times["+scene_id+"]: "+times[scene_id]+" pixel density: "+pixelDensity()+" img.width: "+img.width+" speed: "+speed);
 }
 
 function windowResized() {
@@ -40,6 +47,15 @@ function windowResized() {
 }
 
 function draw() {
+  // prevent image smudge
+  if (abs(x) > end) {
+    background(0);
+  }
   image(img, x, 0);
+  // fade it in
+  if (frameCount < 86) {
+      background(0,0,0,alpha);
+      alpha -= 3;
+  }
   x += speed;
 }
