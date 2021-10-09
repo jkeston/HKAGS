@@ -25,6 +25,8 @@ const REST_PROBABILITY = 0.8;
 const MIN_REST_TIME = 0.75;
 const MAX_REST_TIME = 3;
 
+const VIEW_ALL = false;
+
 let players, xScale, yScale, transX, scrollSpeed;
 
 function setup() {
@@ -42,12 +44,22 @@ function setup() {
   yScale = height * 0.7;
   xScale = yScale;
 
-  const p0Width = players[0].scoreEvents[players[0].scoreEvents.length - 1].endX * xScale;
-  const p1Width = players[1].scoreEvents[players[1].scoreEvents.length - 1].endX * xScale;
+  const p0LastX =
+    players[0].scoreEvents[players[0].scoreEvents.length - 1].endX;
+  const p1LastX =
+    players[1].scoreEvents[players[1].scoreEvents.length - 1].endX;
+
+  if (VIEW_ALL) {
+    xScale = (width / p0LastX) * 0.95;
+    yScale = xScale;
+  }
+
+  const p0Width = p0LastX * xScale;
+  const p1Width = p1LastX * xScale;
 
   // speed = score_len/(times[scene_id] * 30);
-  scrollSpeed = -(Math.max(p0Width, p1Width)) / (420 * 30) / 2;
-  transX = width * 0.75;
+  scrollSpeed = VIEW_ALL ? 0 : -Math.max(p0Width, p1Width) / (420 * 30) / 2;
+  transX = VIEW_ALL ? 0 : width * 0.75;
 
   background(0);
 }
@@ -61,7 +73,7 @@ function draw() {
 
   background(0);
   translate(transX, 50);
-  players.forEach(player => player.draw(xScale, yScale))
+  players.forEach((player) => player.draw(xScale, yScale));
 }
 
 function makeScoreEvents(events) {
@@ -103,6 +115,10 @@ function makeScoreEvents(events) {
   return makeScoreEvents(newEvents);
 }
 
+function getWeightFromSpread(spread) {
+  return map(spread, 0, 1, 1, 15);
+}
+
 function Player(options) {
   const { rgb } = options;
   this.rgb = rgb;
@@ -112,11 +128,10 @@ function Player(options) {
     noFill();
     stroke(this.rgb);
 
-    for (let i = 1; i < this.scoreEvents.length; i++) {
-      const previousEvent = this.scoreEvents[i - 1];
-      const scoreEvent = this.scoreEvents[i];
-
-      for (let p = 0; p < POINTS_PER_PLAYER; p++) {
+    for (let p = 0; p < POINTS_PER_PLAYER; p++) {
+      for (let i = 1; i < this.scoreEvents.length; i++) {
+        const previousEvent = this.scoreEvents[i - 1];
+        const scoreEvent = this.scoreEvents[i];
         const prevSpread =
           SPREAD_SCALE * p * previousEvent.endSpread * yScale * 0.5;
         const startSpread =
@@ -124,7 +139,7 @@ function Player(options) {
         const endSpread =
           SPREAD_SCALE * p * scoreEvent.endSpread * yScale * 0.5;
 
-        strokeWeight(map(previousEvent.endSpread, 0, 1, 2, 10));
+        strokeWeight(getWeightFromSpread(previousEvent.endSpread));
         line(
           previousEvent.endX * xScale,
           previousEvent.endY * yScale + prevSpread,
@@ -133,15 +148,40 @@ function Player(options) {
         );
 
         if (!scoreEvent.isRest) {
-          strokeWeight(map(scoreEvent.endSpread, 0, 1, 2, 10));
-          line(
+          gradientLine(
             scoreEvent.startX * xScale,
             scoreEvent.startY * yScale + startSpread,
             scoreEvent.endX * xScale,
-            scoreEvent.endY * yScale + endSpread
+            scoreEvent.endY * yScale + endSpread,
+            getWeightFromSpread(previousEvent.endSpread),
+            getWeightFromSpread(scoreEvent.endSpread),
+            30
           );
         }
       }
     }
   };
+}
+
+function gradientLine(
+  start_x,
+  start_y,
+  end_x,
+  end_y,
+  start_weight,
+  end_weight,
+  segments
+) {
+  let prev_loc_x = start_x;
+  let prev_loc_y = start_y;
+  for (let i = 1; i <= segments; i++) {
+    let cur_loc_x = lerp(start_x, end_x, i / segments);
+    let cur_loc_y = lerp(start_y, end_y, i / segments);
+    push();
+    strokeWeight(lerp(start_weight, end_weight, i / segments));
+    line(prev_loc_x, prev_loc_y, cur_loc_x, cur_loc_y);
+    pop();
+    prev_loc_x = cur_loc_x;
+    prev_loc_y = cur_loc_y;
+  }
 }
