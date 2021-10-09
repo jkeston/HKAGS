@@ -75,7 +75,7 @@ canvas {
   font-size: 5vw;
   text-align: center;
   animation-fill-mode: forwards;
-  animation-duration: 8s;
+  animation-duration: 15s;
   animation-name: title_fade;
 }
 @keyframes title_fade {
