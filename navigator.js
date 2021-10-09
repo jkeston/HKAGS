@@ -8,6 +8,7 @@ let d;
 let sInt;
 let scene_id;
 let scene_length;
+<<<<<<< HEAD
 let timer = 0;
 let in_alpha = 255;
 let out_alpha = 0;
@@ -15,6 +16,9 @@ let fade_in = true;
 let fade_out = true;
 let fade_in_duration = 5;
 let fade_out_duration = 5;
+=======
+let show_timer = true;
+>>>>>>> 5b12715c67e20062e9cc186f541616532ac5c7ae
 // let loc;
 // let parts;
 let cols = [
