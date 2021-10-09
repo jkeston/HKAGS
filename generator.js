@@ -22,6 +22,7 @@ function setup() {
 	generator[1] = new Generator(random(h),1,0,random(h));
 	generator[0].setSegmentLength();
 	generator[1].setSegmentLength();
+	fade_in_duration = 2;
 }
 
 function makeSegments() {

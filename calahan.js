@@ -1,14 +1,26 @@
 // declare some things
 let speed = 0;
 let score_len = 0;
-const WMOD = 1;
 let img;
 let x = 0;
-let alpha = 255;
 let end = 0;
+const WMOD = 1;
 
 function preload() {
-  img = loadImage('images/calahan_graphic_score_vectors.png');
+  switch(rollDice(4)) {
+    case 1:
+      img = loadImage('images/calahan_graphic_score_vectors.png');
+      break;
+    case 2:
+      img = loadImage('images/calahan_graphic_score_vectors_bw.png');
+      break;
+    case 3:
+      img = loadImage('images/calahan_graphic_score_vectors_2.png');
+      break;
+    case 4:
+      img = loadImage('images/calahan_graphic_score_vectors_2_bw.png');
+      break;
+  }
 }
 
 function setup() {
@@ -34,10 +46,5 @@ function windowResized() {
 function draw() {
   background(0);
   image(img, x, 0);
-  // fade it in
-  if (frameCount < 86) {
-      background(0,0,0,alpha);
-      alpha -= 3;
-  }
   x += speed;
 }

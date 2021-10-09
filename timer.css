@@ -1,5 +1,4 @@
 /* Timer CCS */
-
 @font-face {
     font-family: Lato;
     src: url(fonts/Lato-Regular.ttf);
@@ -38,10 +37,27 @@ canvas {
   width: 100%;
   height: 100vh;
   background-color: #000;
-  opacity: 0;
+  opacity: 1;
+  animation-fill-mode: forwards;
+}
+@keyframes fade_in {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+@keyframes fade_out {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 #time {
-    display: none; 
+    display: none;
     font-family: LatoThin;
     color: rgba(255, 255, 255, 0.25);
     position: fixed;

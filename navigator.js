@@ -2,13 +2,19 @@
 let url;
 let filename;
 let scenes;
-let times;
+let times = [];
 let freeze;
 let d;
 let sInt;
 let scene_id;
 let scene_length;
-let show_timer = false;
+let timer = 0;
+let in_alpha = 255;
+let out_alpha = 0;
+let fade_in = true;
+let fade_out = true;
+let fade_in_duration = 5;
+let fade_out_duration = 5;
 // let loc;
 // let parts;
 let cols = [
@@ -22,15 +28,16 @@ let cols = [
     'rgba(255, 0, 0, 0.65)'
 ];
 let lcols = cols.length - 1;
+const show_timer = true;
 
 // hide the mouse when inactive for 2 seconds
 $(function() {
-    let timer;
+    let hide;
     $(document).mousemove(function() {
         $('html').css({
             cursor: ''
         });
-        timer = setTimeout(function() {
+        hide = setTimeout(function() {
             $('html').css({
                 cursor: 'none'
             });
@@ -114,35 +121,25 @@ function chooseTeam(val, theme) {
 }
 
 window.onload = function() {
-    // another setup!
     url = window.location.pathname;
     filename = url.substring(url.lastIndexOf('/') + 1);
-    // Adjust the list of scenes in sequence here
-    /*
-    1. Anchor|Not Quite| Pillows (7min) pseudo_anchor
-    2. Intimate Perimeter A  (3.5min) pianissimo_textures
-    3. The Way The Light Goes Down (7min) twilight_drones
-    4. Intimate Perimeter B (3.5min) pianissimo_textures
-    5. Generator|Pulse A (3.5 min) generator
-    6. Full Volume | All Together (7 min) repeated_ramps
-    7. Generator | Pulse B (3.5 min) generator
-    8. Connecting (7 min) transmission_strands
-    9. Full Volume \ Used as an ending (15 seconds) */
-    scenes = [ 'combs.html', 'generator.html', 'flock.html', 'bubble_columns.html', 'lfos.html', 'calahan.html', 'flow.html', 'rain.html' ];
+    // Define the list of scenes in sequence here
+    scenes = ['combs.html', 'generator.html', 'particles_rings.html', 'bubble_columns.html', 'lfos.html', 'calahan.html', 'flow.html', 'rain.html'];
     // times are in seconds
-    times = [ 420, 420, 420, 420, 420, 420, 420, 420 ];
-    freeze = [ 1, 1, 1, 1, 1, 1, 1, 1 ];
+    times = [420, 420, 420, 420, 420, 420, 420, 420];
+    freeze = [0, 0, 0, 0, 0, 0, 0, 0];
     scene_id = scenes.indexOf(filename);
     scene_length = times[scene_id];
     if (show_timer) {
-      $('#time').css('display','block');
-      console.log("hide timer");
+        $('#time').css('display', 'block');
+    }
+    if (!fade_in) {
+        $('#overlay').css('opacity', 0);
     }
     reStartTimer();
 }
 
 function startTimer(duration, display) {
-    let timer = 0;
     let i = 0;
     sInt = setInterval(function() {
         minutes = parseInt(timer / 60);
@@ -153,13 +150,18 @@ function startTimer(duration, display) {
             // console.log(i + '|' + cols[i]);
             $('#time').css('color', cols[i]);
         }
-        if ( scene_length - timer <= 60 ) {
+        if (scene_length - timer <= 60) {
             $('#time').css('color', cols[7]); // set last minute to red
         }
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
         if (show_timer) {
-          display.html(minutes + "<sup>:</sup>" + seconds);
+            display.html(minutes + "<sup>:</sup>" + seconds);
+        }
+        if (fade_out && timer > duration - fade_out_duration) {
+            $('#overlay').css('animation-duration', fade_out_duration + 's');
+            $('#overlay').css('animation-name', 'fade_out');
+            fade_out = false;
         }
         // we're finished with this scene
         if (++timer > duration) {
@@ -178,6 +180,11 @@ function startTimer(duration, display) {
                 window.location = scenes[goto];
             }
         }
+        if (fade_in) {
+            $('#overlay').css('animation-duration', fade_in_duration + 's');
+            $('#overlay').css('animation-name', 'fade_in');
+            fade_in = false;
+        }
     }, 1000);
 }
 
@@ -187,7 +194,7 @@ function reStartTimer() {
         d = 7 * 60; // 7 minute default
     }
     if (scene_length > 0) {
-      d = scene_length;
+        d = scene_length;
     }
     display = $('#time');
     clearInterval(sInt);

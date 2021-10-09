@@ -6,6 +6,8 @@ let sroll = 1;
 let opacity = 3;
 let lineCount = 0;
 let rainTeam = [];
+let half_time = 0;
+let wait =  0;
 const WMOD = 1;
 
 function setup() {
@@ -15,21 +17,17 @@ function setup() {
     createCanvas(w, h);
     cx = w;
     pixelDensity(1);
-
     rainTeam[0] = new RainStreak(0);
     rainTeam[1] = new RainStreak(1);
 }
 
 function draw() {
+    fill(0);
     background(0, opacity);
-    if (opacity > 3) {
-        opacity *= 0.99;
-    }
+    noFill();
     // Slow down thicker lines (segLen)
-    // console.log(" Math.ceil(rainTeam[0].segLen * 0.25): "+Math.ceil(rainTeam[0].segLen * 0.25));
     if (frameCount % Math.ceil(rainTeam[0].segLen * 0.25) == 0) {
         rainTeam[0].display();
-        // console.log("rainTeam[0].vPos: "+rainTeam[0].vPos+" rainTeam[0].rolling: "+rainTeam[0].rolling);
     }
     if (frameCount % Math.ceil(rainTeam[1].segLen * 0.25) == 0) {
         rainTeam[1].display();
@@ -51,21 +49,55 @@ class RainStreak {
         this.sroll = s;
         this.segLen = s;
         this.sNoise = h;
+        this.rest = false;
+        this.restLen = 0;
     }
     newRainStreak() {
         let nextNoise = h;
-
+        half_time = times[scene_id]/2;
+        wait =  half_time - 5;
         // chance of noise increases with lineCount
         // First five will not have noise
-        if (rollDice(lineCount) > 5) {
+        // if (rollDice(lineCount) > 5) {
             // randomize noise starting height
+            // nextNoise = random(h * 0.125, h);
+        // }
+        // Or... Chance of noise arcs with duration
+        // More frequent in middle of piece than BOP or EOP
+        let chance = abs(half_time-timer);
+        let lchance = abs(half_time-chance);
+        let nroll = rollDice(chance);
+        if ( chance <= wait && nroll < lchance ) {
             nextNoise = random(h * 0.125, h);
+        }
+        // console.log("lchance "+lchance+" nroll "+nroll);
+        // Roll for chance of a rest
+        // Less frequent in middle of piece than BOP or EOP
+        let rroll = rollDice(lchance+5);
+        if ( rroll < 5 ) {
+          this.rest = true;
+          this.restLen = random(200,h);
+        }
+        else {
+          this.rest = false;
         }
         return [rollDice(12), nextNoise, random(w)];
     }
     display() {
         this.rolling = true;
-        while (this.rolling) {
+        if (this.rest && this.restLen > 0) {
+          if (frameCount % 4 == 0) {
+            strokeWeight(this.vals[0] * 0.5);
+            stroke(chooseTeam(this.team));
+            ellipse(this.hPos, this.vPos, this.restLen, this.restLen);
+            this.restLen -= (this.vals[0]+5);
+          }
+        }
+        else {
+          this.rest = false;
+          this.restLen = 0;
+        }
+        while (this.rolling && this.rest == false) {
             if (this.vPos == 0) {
                 this.vals = this.newRainStreak();
             }
@@ -91,7 +123,7 @@ class RainStreak {
             // console.log("this.vPos: "+this.vPos+ " this.segLen: "+this.segLen+" h: "+h);
             // if the line is done
             if (this.vPos >= h) {
-                console.log("lineCount: "+lineCount+" this.sroll: "+this.sroll);
+                // console.log("lineCount: "+lineCount+" this.sroll: "+this.sroll);
                 this.sroll = this.vals[0];
                 this.segLen = this.vals[0];
                 this.sNoise = this.vals[1];
@@ -103,11 +135,6 @@ class RainStreak {
             this.rolling = false;
         }
     }
-}
-
-function rollDice(sides) {
-    let result = Math.floor(Math.random() * sides) + 1;
-    return result;
 }
 
 function windowResized() {

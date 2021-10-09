@@ -1,11 +1,10 @@
 // declare some things
 let speed = -.75;
 let score_len = 0;
-const WMOD = 1;
 let img;
 let x = 0;
 let end = 0;
-let alpha = 255;
+const WMOD = 1;
 
 function preload() {
   switch(rollDice(4)) {
@@ -38,6 +37,8 @@ function setup() {
   end = score_len - w;
   speed = -((score_len)/(times[scene_id] * 30));
   // console.log("times["+scene_id+"]: "+times[scene_id]+" pixel density: "+pixelDensity()+" img.width: "+img.width+" speed: "+speed);
+  fade_in_duration = 10;
+  fade_out_duration = 10;
 }
 
 function windowResized() {
@@ -53,9 +54,5 @@ function draw() {
   }
   image(img, x, 0);
   // fade it in
-  if (frameCount < 86) {
-      background(0,0,0,alpha);
-      alpha -= 3;
-  }
   x += speed;
 }
