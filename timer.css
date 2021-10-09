@@ -7,10 +7,10 @@
     font-family: LatoThin;
     src: url(fonts/Lato-Hairline.ttf);
 }
-@font-face {
+/* @font-face {
     font-family: IGNIEUS;
     src: url(fonts/IGNIEUS_0.3.ttf);
-}
+} */
 * {
     box-sizing: border-box;
 }
@@ -57,10 +57,7 @@ canvas {
   }
 }
 #time {
-<<<<<<< HEAD
     display: none;
-=======
->>>>>>> 5b12715c67e20062e9cc186f541616532ac5c7ae
     font-family: LatoThin;
     color: rgba(255, 255, 255, 0.25);
     position: fixed;
