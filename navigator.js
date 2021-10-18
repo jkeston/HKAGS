@@ -28,7 +28,7 @@ let cols = [
     'rgba(255, 0, 0, 0.65)'
 ];
 let lcols = cols.length - 1;
-const show_timer = true;
+const show_timer = false;
 
 // hide the mouse when inactive for 2 seconds
 $(function() {
@@ -130,6 +130,10 @@ window.onload = function() {
     freeze = [0, 0, 0, 0, 0, 0, 0, 0];
     scene_id = scenes.indexOf(filename);
     scene_length = times[scene_id];
+    if ( filename == 'index.html' || scene_id == -1 ) {
+      console.log("filename: "+filename+" scene_id "+scene_id);
+    }
+
     if (show_timer) {
         $('#time').css('display', 'block');
     }
