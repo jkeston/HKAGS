@@ -4,11 +4,11 @@ const ROTATION_INTENSITY_MAGNITUDE = 0.1;
 const GRAVITY = 0.3;
 const player1Rgb = [217, 2, 125];
 const player2Rgb = [0, 175, 102];
-const MIN_SUSTAIN_TIME = 100;
-const MAX_SUSTAIN_TIME = 1000;
+const MIN_SUSTAIN_TIME = 300;
+const MAX_SUSTAIN_TIME = 1500;
 const PARTICLE_STROKE_WEIGHT = 2;
 const MIN_FADE_TIME = 200;
-const MAX_FADE_TIME = 800;
+const MAX_FADE_TIME = 1000;
 const MIN_NUM_PARTICLES = 5;
 const MAX_NUM_PARTICLES = 50;
 const MIN_PARTICLE_WIDTH = 20;
@@ -23,12 +23,69 @@ const MAX_RING_SUSTAIN_TIME = 500;
 const RING_FADE_TIME = 100;
 const RING_STROKE_WEIGHT = 2;
 const RING_MAX_STROKE_WEIGHT = 70;
-const MIN_TICKS_UNTIL_NEXT_RING = 300;
-const MAX_TICKS_UNTIL_NEXT_RING = 800;
+// const MIN_TICKS_UNTIL_NEXT_RING = 300;
+// const MAX_TICKS_UNTIL_NEXT_RING = 800;
+// const CHANCE_OF_PARTICLE_EVENT = 0.01;
+const SCORE_LENGTH = 7 * 60 * 1000; // milliseconds
+const HALF_SCORE_LENGTH = 3.5 * 60 * 1000; // milliseconds
 
-let particleEvents, ringEvents, players;
+let start, particleEvents, ringEvents, players;
+
+function getElapsedTime() {
+  const elapsed = new Date() - start;
+  return elapsed;
+}
+
+function getChanceOfParticleEvent() {
+  const elapsed = getElapsedTime();
+  const min = 0.003;
+  const max = 0.02;
+
+  const result =
+    elapsed < HALF_SCORE_LENGTH
+      ? map(elapsed, 0, HALF_SCORE_LENGTH, min, max)
+      : map(elapsed, HALF_SCORE_LENGTH, SCORE_LENGTH, max, min);
+
+  return result;
+}
+
+function getNextRingTicks() {
+  const elapsed = getElapsedTime();
+  const MIN_TICKS_LOW = 1500;
+  const MIN_TICKS_HIGH = 50;
+
+  const MAX_TICKS_LOW = 3000;
+  const MAX_TICKS_HIGH = 300;
+
+  const minTicks =
+    elapsed < HALF_SCORE_LENGTH
+      ? map(elapsed, 0, HALF_SCORE_LENGTH, MIN_TICKS_LOW, MIN_TICKS_HIGH)
+      : map(
+          elapsed,
+          HALF_SCORE_LENGTH,
+          SCORE_LENGTH,
+          MIN_TICKS_HIGH,
+          MIN_TICKS_LOW
+        );
+
+  const maxTicks =
+    elapsed < HALF_SCORE_LENGTH
+      ? map(elapsed, 0, HALF_SCORE_LENGTH, MAX_TICKS_LOW, MAX_TICKS_HIGH)
+      : map(
+          elapsed,
+          HALF_SCORE_LENGTH,
+          SCORE_LENGTH,
+          MAX_TICKS_HIGH,
+          MAX_TICKS_LOW
+        );
+
+  const result = Math.floor(random(minTicks, maxTicks));
+
+  return result;
+}
 
 function setup() {
+  start = new Date();
   const w = windowWidth * WMOD;
   const h = windowHeight * WMOD;
   createCanvas(w, h);
@@ -38,19 +95,13 @@ function setup() {
   players = [
     {
       rgb: player1Rgb,
-      name: '1',
-      ticksUntilNextRing: random(
-        MIN_TICKS_UNTIL_NEXT_RING,
-        MAX_TICKS_UNTIL_NEXT_RING
-      ),
+      name: "1",
+      ticksUntilNextRing: getNextRingTicks(),
     },
     {
       rgb: player2Rgb,
-      name: '2',
-      ticksUntilNextRing: random(
-        MIN_TICKS_UNTIL_NEXT_RING,
-        MAX_TICKS_UNTIL_NEXT_RING
-      ),
+      name: "2",
+      ticksUntilNextRing: getNextRingTicks(),
     },
   ];
 }
@@ -59,7 +110,7 @@ function update() {
   players.forEach((player) => {
     if (
       !particleEvents.find((p) => p.player.name === player.name) &&
-      Math.random() > 0.01
+      Math.random() > getChanceOfParticleEvent()
     ) {
       particleEvents.push(
         new ParticleEvent({
@@ -81,8 +132,8 @@ function update() {
     player.ticksUntilNextRing--;
 
     if (
-      !ringEvents.find((p) => p.player.name === player.name) 
-      && player.ticksUntilNextRing < 0
+      !ringEvents.find((p) => p.player.name === player.name) &&
+      player.ticksUntilNextRing < 0
     ) {
       ringEvents.push(
         new RingEvent({
@@ -111,11 +162,8 @@ function update() {
 
   const deadRingEvents = ringEvents.filter((pe) => pe.state === states.DONE);
   deadRingEvents.forEach((deadEvent) => {
-    const player = players.find(p => p.name === deadEvent.player.name);
-    player.ticksUntilNextRing = random(
-      MIN_TICKS_UNTIL_NEXT_RING,
-      MAX_TICKS_UNTIL_NEXT_RING
-    );
+    const player = players.find((p) => p.name === deadEvent.player.name);
+    player.ticksUntilNextRing = getNextRingTicks();
     const i = ringEvents.indexOf(deadEvent);
     ringEvents.splice(i, 1);
   });
@@ -305,16 +353,18 @@ function ParticleEvent(options) {
     if (this.hasParticlesInView) {
       this.particles.forEach((p) => p.draw());
 
-
       // if (this.state === states.FORMING || this.state === states.SUSTAINING){
-        strokeWeight(1);
-        stroke(this.rgb.concat(150));
-        for (let i = 0; i < this.particles.length -2; i++ ){
-
-          line(this.particles[i].x, this.particles[i].y, this.particles[i+1].x, this.particles[i+1].y)
-        }
+      strokeWeight(1);
+      stroke(this.rgb.concat(150));
+      for (let i = 0; i < this.particles.length - 2; i++) {
+        line(
+          this.particles[i].x,
+          this.particles[i].y,
+          this.particles[i + 1].x,
+          this.particles[i + 1].y
+        );
+      }
       // }
-
     }
   };
 

@@ -27,7 +27,12 @@ const MAX_REST_TIME = 3;
 
 const VIEW_ALL = false;
 
-let players, xScale, yScale, transX, scrollSpeed;
+let buffer,
+  players,
+  xScale,
+  yScale,
+  transX,
+  scrollSpeed;
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -57,11 +62,13 @@ function setup() {
   const p0Width = p0LastX * xScale;
   const p1Width = p1LastX * xScale;
 
-  // speed = score_len/(times[scene_id] * 30);
-  scrollSpeed = VIEW_ALL ? 0 : -Math.max(p0Width, p1Width) / (420 * 30) / 2;
+  const actualWidth = Math.max(p0Width, p1Width);
+
+  scrollSpeed = VIEW_ALL ? 0 : -actualWidth / (420 * 30) / 2;
   transX = VIEW_ALL ? 0 : width * 0.75;
 
-  background(0);
+  buffer = createGraphics(actualWidth, windowHeight);
+  players.forEach((player) => player.draw(buffer, xScale, yScale));
 }
 
 function update() {
@@ -70,10 +77,28 @@ function update() {
 
 function draw() {
   update();
-
   background(0);
-  translate(transX, 50);
-  players.forEach((player) => player.draw(xScale, yScale));
+
+  // this draws a zoomed-in portion of the entire score buffer.
+  // destination position: 0,0
+  // destination size: windowWidth, windowHeight
+  // source score X position: -transX (this scrolls to the correct portion of the score)
+  // source score Y position: 0
+  // source captured size: windowWidth, windowHeight
+  // 
+  // refer to the final example here for more info:
+  // https://p5js.org/reference/#/p5/image
+  image(
+    buffer,
+    0,
+    0,
+    windowWidth,
+    windowHeight,
+    -transX,
+    0,
+    windowWidth,
+    windowHeight
+  );
 }
 
 function makeScoreEvents(events) {
@@ -124,15 +149,14 @@ function Player(options) {
   this.rgb = rgb;
   this.scoreEvents = makeScoreEvents();
 
-  this.draw = function (xScale, yScale) {
-    noFill();
-    stroke(this.rgb);
-
+  this.draw = function (buffer, xScale, yScale) {
+    buffer.noFill();
+    buffer.stroke(this.rgb);
 
     const yScaleFactor = yScale * 0.5;
 
     for (let p = 0; p < POINTS_PER_PLAYER; p++) {
-      const spreadScaleFactor = SPREAD_SCALE * p
+      const spreadScaleFactor = SPREAD_SCALE * p;
       for (let i = 1; i < this.scoreEvents.length; i++) {
         const previousEvent = this.scoreEvents[i - 1];
         const scoreEvent = this.scoreEvents[i];
@@ -143,8 +167,8 @@ function Player(options) {
         const endSpread =
           spreadScaleFactor * scoreEvent.endSpread * yScaleFactor;
 
-        strokeWeight(getWeightFromSpread(previousEvent.endSpread));
-        line(
+        buffer.strokeWeight(getWeightFromSpread(previousEvent.endSpread));
+        buffer.line(
           previousEvent.endX * xScale,
           previousEvent.endY * yScale + prevSpread,
           scoreEvent.startX * xScale,
@@ -153,6 +177,7 @@ function Player(options) {
 
         if (!scoreEvent.isRest) {
           gradientLine(
+            buffer,
             scoreEvent.startX * xScale,
             scoreEvent.startY * yScale + startSpread,
             scoreEvent.endX * xScale,
@@ -168,6 +193,7 @@ function Player(options) {
 }
 
 function gradientLine(
+  buffer,
   start_x,
   start_y,
   end_x,
@@ -181,10 +207,10 @@ function gradientLine(
   for (let i = 1; i <= segments; i++) {
     let cur_loc_x = lerp(start_x, end_x, i / segments);
     let cur_loc_y = lerp(start_y, end_y, i / segments);
-    push();
-    strokeWeight(lerp(start_weight, end_weight, i / segments));
-    line(prev_loc_x, prev_loc_y, cur_loc_x, cur_loc_y);
-    pop();
+    buffer.push();
+    buffer.strokeWeight(lerp(start_weight, end_weight, i / segments));
+    buffer.line(prev_loc_x, prev_loc_y, cur_loc_x, cur_loc_y);
+    buffer.pop();
     prev_loc_x = cur_loc_x;
     prev_loc_y = cur_loc_y;
   }
