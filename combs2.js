@@ -128,16 +128,20 @@ function Player(options) {
     noFill();
     stroke(this.rgb);
 
+
+    const yScaleFactor = yScale * 0.5;
+
     for (let p = 0; p < POINTS_PER_PLAYER; p++) {
+      const spreadScaleFactor = SPREAD_SCALE * p
       for (let i = 1; i < this.scoreEvents.length; i++) {
         const previousEvent = this.scoreEvents[i - 1];
         const scoreEvent = this.scoreEvents[i];
         const prevSpread =
-          SPREAD_SCALE * p * previousEvent.endSpread * yScale * 0.5;
+          spreadScaleFactor * previousEvent.endSpread * yScaleFactor;
         const startSpread =
-          SPREAD_SCALE * p * scoreEvent.startSpread * yScale * 0.5;
+          spreadScaleFactor * scoreEvent.startSpread * yScaleFactor;
         const endSpread =
-          SPREAD_SCALE * p * scoreEvent.endSpread * yScale * 0.5;
+          spreadScaleFactor * scoreEvent.endSpread * yScaleFactor;
 
         strokeWeight(getWeightFromSpread(previousEvent.endSpread));
         line(
