@@ -28,7 +28,7 @@ let cols = [
     'rgba(255, 0, 0, 0.65)'
 ];
 let lcols = cols.length - 1;
-const show_timer = false;
+const show_timer = true;
 
 // hide the mouse when inactive for 2 seconds
 $(function() {
