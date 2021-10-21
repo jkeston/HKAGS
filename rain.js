@@ -70,17 +70,20 @@ class RainStreak {
         if ( chance <= wait && nroll < lchance ) {
             nextNoise = random(h * 0.125, h);
         }
-        // console.log("lchance "+lchance+" nroll "+nroll);
         // Roll for chance of a rest
         // Less frequent in middle of piece than BOP or EOP
         let rroll = rollDice(lchance+5);
-        if ( rroll < 5 ) {
+        let rroll2 = rollDice(lchance+5);
+        // rolling twice to double the chances of rests
+        if ( rroll <= 5 || rroll2 <= 5 ) {
           this.rest = true;
           this.restLen = random(200,h);
         }
         else {
           this.rest = false;
         }
+        // console.log("NOISE: chance "+chance+" wait "+wait+" lchance "+lchance+" nroll "+nroll);
+        // console.log("REST: lchance "+lchance+" rroll(lchance+5) "+rroll+" this.rest "+this.rest);
         return [rollDice(12), nextNoise, random(w)];
     }
     display() {

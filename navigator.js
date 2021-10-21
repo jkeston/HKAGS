@@ -28,7 +28,7 @@ let cols = [
     'rgba(255, 0, 0, 0.65)'
 ];
 let lcols = cols.length - 1;
-const show_timer = true;
+const show_timer = false;
 
 // hide the mouse when inactive for 2 seconds
 $(function() {
@@ -136,6 +136,9 @@ window.onload = function() {
 
     if (show_timer) {
         $('#time').css('display', 'block');
+    }
+    else {
+        $('#time').css('display', 'none');
     }
     if (!fade_in) {
         $('#overlay').css('opacity', 0);
