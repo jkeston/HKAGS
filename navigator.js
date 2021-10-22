@@ -124,7 +124,7 @@ window.onload = function() {
     url = window.location.pathname;
     filename = url.substring(url.lastIndexOf('/') + 1);
     // Define the list of scenes in sequence here
-    scenes = ['combs.html', 'generator.html', 'particles_rings.html', 'bubble_columns.html', 'flow.html', 'rain.html', 'lfos.html', 'calahan.html'];
+    scenes = ['renewable.html', 'generator.html', 'scarcity.html', 'petrochemical.html', 'watershed.html', 'toxic.html', 'offgrid.html', 'system.html'];
     // times are in seconds
     times = [420, 420, 420, 420, 420, 420, 420, 420];
     freeze = [0, 0, 0, 0, 0, 0, 0, 0];

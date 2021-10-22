@@ -14,7 +14,12 @@
 * {
     box-sizing: border-box;
 }
+body {
+  margin: 0;
+  background: #000;
+}
 canvas {
+  margin: auto;
   position: absolute;
   top: 0vh;
 }
@@ -59,7 +64,6 @@ canvas {
 #title {
   display: flex;
   justify-content: center;
-  /* align-content: center; */
   flex-direction: column;
   position: absolute;
   z-index: 3;
@@ -75,6 +79,12 @@ canvas {
   animation-name: title_fade;
   text-shadow: 0 0 3vw #000;
   padding-bottom: 0.5em;
+}
+.hodnick {
+  color: rgb(217,2,125);
+}
+.keston {
+  color: rgb(0,175,102);
 }
 @keyframes title_fade {
   0% {
